@@ -23,8 +23,8 @@ pipeline{
             def warFile = findFiles(glob: '**/*.war')[0]
 
             withCredentials([usernamePassword(credentialsId: tomcatCredentialsId, 
-usernameVariable: 'TOMCAT_USER', passwordVariable: 'TOMCAT_PASSWORD')]) {
-                sh "curl -u $TOMCAT_USER:$TOMCAT_PASSWORD --upload-file $warFile 
+usernameVariable: 'tomcat', passwordVariable: 'admin')]) {
+                sh "curl -u $tomcat:$admin --upload-file $warFile 
 $tomcatUrl/manager/text/deploy?path=/"
             }
         }
