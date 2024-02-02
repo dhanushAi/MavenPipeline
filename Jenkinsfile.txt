@@ -15,10 +15,21 @@ pipeline{
 				}
 			}
 		}
-		stage ('Deploy to tomcat server'){
-			steps{
-				deploy adapters: [tomcat8(credentialsId: '42cfc17f-f00a-4771-866b-388b32e69a4c', path: '', url: 'http://localhost:6060/')], contextPath: null, war: '**/*.war'
-			}
-		}
+		stage('Deploy to Tomcat server') {
+    steps {
+        script {
+            def tomcatUrl = 'http://localhost:6060/'
+            def tomcatCredentialsId = '42cfc17f-f00a-4771-866b-388b32e69a4c'
+            def warFile = findFiles(glob: '**/*.war')[0]
+
+            withCredentials([usernamePassword(credentialsId: tomcatCredentialsId, 
+usernameVariable: 'TOMCAT_USER', passwordVariable: 'TOMCAT_PASSWORD')]) {
+                sh "curl -u $TOMCAT_USER:$TOMCAT_PASSWORD --upload-file $warFile 
+$tomcatUrl/manager/text/deploy?path=/"
+            }
+        }
+    }
+}
+
 	}
 }
