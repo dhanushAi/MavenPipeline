@@ -1,35 +1,31 @@
-pipeline{
-	agent any
-	tools{
-		maven 'MAVEN_HOME'
-	}
-	stages{
-		stage ('Build'){
-			steps{
-				sh 'mvn clean package'
-			}
-			post{
-				success{
-					echo "Archiving the Artifacts"
-					archiveArtifacts artifacts: '**/target/*.war'
-				}
-			}
-		}
-		stage('Deploy to Tomcat server') {
-    steps {
-        script {
-            def tomcatUrl = 'http://localhost:6060/'
-            def tomcatCredentialsId = '42cfc17f-f00a-4771-866b-388b32e69a4c'
-            def warFile = findFiles(glob: '**/*.war')[0]
+pipeline {
+    agent any
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    git 'https://github.com/dhineshkumarmech/PipelineDemoProject.git'
+                }
+            }
+        }
 
-            withCredentials([usernamePassword(credentialsId: tomcatCredentialsId, 
-usernameVariable: 'tomcat', passwordVariable: 'admin')]) {
-                sh "curl -u $TOMCAT_USER:$TOMCAT_PASSWORD --upload-file $warFile 
-$tomcatUrl/manager/text/deploy?path=/"
+        stage('Build') {
+            steps {
+                script {
+                    def mvnHome = tool 'MAVEN_HOME'
+                    sh "${mvnHome}/bin/mvn clean package"
+                }
+            }
+        }
+
+        stage('Deploy to Tomcat') {
+            steps {
+                script {
+                    deploy adapters: [tomcat8(credentialsId: '42cfc17f-f00a-4771-866b-388b32e69a4c', path: '', url: 'http://localhost:6060/')], contextPath: null, war: '**/*.war'
+                    }
+                }
             }
         }
     }
-}
-
-	}
 }
