@@ -24,7 +24,7 @@ pipeline{
 
             withCredentials([usernamePassword(credentialsId: tomcatCredentialsId, 
 usernameVariable: 'tomcat', passwordVariable: 'admin')]) {
-                sh "curl -u $tomcat:$admin --upload-file $warFile 
+                sh "curl -u $TOMCAT_USER:$TOMCAT_PASSWORD --upload-file $warFile 
 $tomcatUrl/manager/text/deploy?path=/"
             }
         }
