@@ -6,9 +6,9 @@ pipeline {
             steps {
                 script {
                     if (isUnix()) {
-                        sh 'git https://github.com/dhineshkumarmech/PipelineDemoProject.git'
+                        sh git 'https://github.com/dhineshkumarmech/PipelineDemoProject.git'
                     } else {
-                        bat 'git https://github.com/dhineshkumarmech/PipelineDemoProject.git'
+                        bat git 'https://github.com/dhineshkumarmech/PipelineDemoProject.git'
                     }
                 }
             }
