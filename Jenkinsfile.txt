@@ -1,7 +1,15 @@
 pipeline {
     agent any
-
+    
     stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    git 'https://github.com/dhineshkumarmech/PipelineDemoProject.git'
+                }
+            }
+        }
+
         stage('Build') {
             steps {
                 script {
@@ -9,22 +17,13 @@ pipeline {
                     sh "${mvnHome}/bin/mvn clean package"
                 }
             }
-            post {
-                success {
-                    echo "Archiving the Artifacts"
-                    archiveArtifacts artifacts: '**/target/*.war'
-                }
-            }
         }
 
-        stage('Deploy to Tomcat server') {
+        stage('Deploy to Tomcat') {
             steps {
                 script {
-                    def tomcatUrl = 'http://localhost:6060/'
-                    def tomcatCredentialsId = '42cfc17f-f00a-4771-866b-388b32e69a4c'
-                    def warFile = findFiles(glob: '**/*.war')[0]
-
-                    deploy adapters: [tomcat8(credentialsId: tomcatCredentialsId, path: '', url: tomcatUrl)], contextPath: null, war: warFile
+                    deploy adapters: [tomcat8(credentialsId: '42cfc17f-f00a-4771-866b-388b32e69a4c', path: '', url: 'http://localhost:6060/')], contextPath: null, war: '**/*.war'
+                    }
                 }
             }
         }
