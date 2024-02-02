@@ -1,12 +1,14 @@
 pipeline {
     agent any
-    
+
+    tools {
+        maven 'MAVEN_HOME'
+    }
     stages {
         stage('Build') {
             steps {
                 script {
-                    def mvnHome = tool 'MAVEN_HOME'
-                    sh "${mvnHome}/mvn clean package"
+                    sh 'mvn clean package'
                 }
             }
         }
