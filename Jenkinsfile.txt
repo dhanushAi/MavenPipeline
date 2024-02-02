@@ -2,14 +2,6 @@ pipeline {
     agent any
     
     stages {
-        stage('Checkout') {
-            steps {
-                script {
-                    git 'https://github.com/dhineshkumarmech/PipelineDemoProject.git'
-                }
-            }
-        }
-
         stage('Build') {
             steps {
                 script {
